@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kids Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        #game-container {
+            margin: 50px auto;
+            width: 300px;
+        }
+
+        #question {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        #score {
+            font-size: 20px;
+        }
+
+        button {
+            font-size: 18px;
+            padding: 10px 20px;
+            margin: 10px;
+            cursor: pointer;
+        }
+
+        #button-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+
+<body>
+    <center>
+        <h1>Compare between numbers from 1000 to 9999</h1>
+        <div id="game-container">
+            <div id="question"></div>
+
+            <div id="button-container">
+                <button id="true-btn"><img height="200px" width="200px" src="true.png" alt="True"></button>
+                <button id="false-btn"><img height="200px" width="200px" src="false.png" alt="False"></button>
+            </div>
+
+            <div id="score">Score: 0</div>
+            <div id="timer">Time Left: 60</div>
+        </div>
+    </center>
+
+    <script>
+        let score = 0;
+        let timer = 0;
+        let intervalId;
+
+        function generateQuestion() {
+            const num1 = Math.floor(Math.random() * 9000) + 1000;
+            const num2 = Math.floor(Math.random() * 9000) + 1000;
+            const sign = Math.random() < 0.5 ? '<' : '>';
+            const question = `${num1} ${sign} ${num2}`;
+            const answer = eval(question);
+            return { question, answer };
+        }
+
+        function updateScore() {
+            document.getElementById('score').textContent = `Score: ${score}`;
+        }
+
+        function updateTimer() {
+            document.getElementById('timer').textContent = `Time Left: ${timer}`;
+        }
+
+        function startGame() {
+            score = 0;
+            timer = 60;
+            updateScore();
+            updateTimer();
+            intervalId = setInterval(() => {
+                timer--;
+                updateTimer();
+                if (timer === 0) {
+                    endGame();
+                }
+            }, 1000);
+            nextQuestion();
+        }
+
+        function endGame() {
+            clearInterval(intervalId);
+            alert(`Game Over! Your Score: ${score}`);
+        }
+
+        function nextQuestion() {
+            const { question, answer } = generateQuestion();
+            document.getElementById('question').textContent = question;
+            document.getElementById('true-btn').onclick = () => checkAnswer(true, answer);
+            document.getElementById('false-btn').onclick = () => checkAnswer(false, answer);
+        }
+
+        function checkAnswer(userAnswer, correctAnswer) {
+            if (userAnswer === correctAnswer) {
+                score++;
+                updateScore();
+            }
+            nextQuestion();
+        }
+
+        startGame();
+    </script>
+</body>
+
+</html>
